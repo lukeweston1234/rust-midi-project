@@ -5,6 +5,10 @@ use std::time::Duration;
 
 use midir::{MidiOutput, MidiOutputPort, MidiOutputConnection};
 
+const NOTE_ON_MSG: u8 = 0x90;
+const NOTE_OFF_MSG: u8 = 0x80;
+const VELOCITY: u8 = 0x64;
+    
 fn main() {
     match run() {
         Ok(()) => (),
@@ -14,15 +18,30 @@ fn main() {
 
 fn run() -> Result<(),Box<dyn Error>>{
     let mut output:MidiOutputConnection = get_midi_out()?;
+
     play_note(&mut output, 66, 4);
+    play_note(&mut output, 68, 4);
+    play_note(&mut output, 69, 4);
+    play_note(&mut output, 71, 4);
+
+    let notes: Vec<u8> =vec![66,68,69,71];
+
+    play_chord(&mut output, notes, 4);
+
     Ok(())
 }
 
-fn play_note(output: &mut MidiOutputConnection, note: u8, duration: u64){
-    const NOTE_ON_MSG: u8 = 0x90;
-    const NOTE_OFF_MSG: u8 = 0x80;
-    const VELOCITY: u8 = 0x64;
+fn play_chord(output: &mut MidiOutputConnection, notes: Vec<u8>, duration: u64){
+    for note in notes.iter(){
+        let _ = output.send(&[NOTE_ON_MSG, *note, VELOCITY]);
+    }
+    sleep(Duration::from_millis(duration * 150));
+    for note in notes.iter(){
+        let _ = output.send(&[NOTE_OFF_MSG, *note, VELOCITY]);
+    }
+}
 
+fn play_note(output: &mut MidiOutputConnection, note: u8, duration: u64){
     let _ = output.send(&[NOTE_ON_MSG, note, VELOCITY]);
     sleep(Duration::from_millis(duration * 150));
     let _ = output.send(&[NOTE_OFF_MSG, note, VELOCITY]);
