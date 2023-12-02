@@ -1,9 +1,8 @@
 use std::error::Error;
-use std::io::{stdin, stdout, Write};
 use std::thread::sleep;
 use std::time::Duration;
 
-use midir::{MidiOutput, MidiOutputPort, Ignore, MidiOutputConnection, MidiInput, MidiInputConnection};
+use midir::{ MidiOutputConnection, MidiInputConnection};
 
 mod midi;
 
@@ -29,5 +28,14 @@ impl App {
         let _ = (*self).midi_out.send(&[NOTE_ON_MSG, note, VELOCITY]);
         sleep(Duration::from_millis(duration * 150));
         let _ = (*self).midi_out.send(&[NOTE_OFF_MSG, note, VELOCITY]);
+    }
+    pub fn play_chord(&mut self, notes: &Vec<u8>, duration: u64){
+        for note in notes {
+            let _ = (*self).midi_out.send(&[NOTE_ON_MSG, *note, VELOCITY]);
+        }
+        sleep(Duration::from_millis(duration * 150));
+        for note in notes {
+            let _ = (*self).midi_out.send(&[NOTE_OFF_MSG, *note, VELOCITY]);
+        }
     }
 }

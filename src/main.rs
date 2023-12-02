@@ -20,6 +20,10 @@ fn run(){
     app.play_note(69, 4);
     app.play_note(71, 4);
 
+    let new_chord = vec![66,68,69,71];
+
+    app.play_chord(&new_chord, 8);
+
     println!("Going to wait...");
     stdin().read_line(&mut String::new()).unwrap();
 }
