@@ -38,10 +38,31 @@ pub fn initialize_midi_map() -> (HashMap<u8, Vec<String>>, HashMap<String, u8>) 
 }
 
 pub type Interval = u8;
+pub enum IntervalEnum {
+    PerfectUnison,
+    MinorSecond,
+    MajorSecond,
+    MinorThird,
+    MajorThird,
+    PerfectFourth,
+    Tritone,
+    PerfectFifth,
+    AugmentedFifth,
+    MinorSixth,
+    MajorSixth,
+    MinorSeventh,
+    MajorSeventh,
+    PerfectOctave,
+    MinorNinth,
+    MajorNinth,
+    SharpEleven,
+    MajorThirteenth
+} 
 
 pub struct Chord {
     root_note: String,
-    intervals: Vec<Interval>,
+    triad_intervals: Vec<Interval>,
+    extensions: Vec<Interval>,
     note_to_midi_map: HashMap<u8, Vec<String>>,
     midi_to_note_map: HashMap<String, u8>
 }
@@ -50,7 +71,8 @@ impl Chord {
         let midi_touple: (HashMap<u8, Vec<String>>, HashMap<String, u8>) = initialize_midi_map();
         Chord {
             root_note: root_note,
-            intervals: intervals,
+            triad_intervals: intervals,
+            extensions: Vec::new(),
             note_to_midi_map: midi_touple.0,
             midi_to_note_map: midi_touple.1
         }
@@ -67,17 +89,39 @@ impl Chord {
     pub fn sus(root_note: String) -> Chord {
         return Chord::new(root_note, vec![0, 5, 7]);
     }
-    pub fn set_extensions(&mut self, intervals: &mut Vec<Interval>){
-        (*self).intervals.append(intervals);
+    pub fn set_extensions(&mut self, intervals: &mut Vec<IntervalEnum>){
+        (*self).extensions = intervals.iter().map(|i| { Chord::get_interval_from_enum(i)}).collect();
     }
+    fn get_interval_from_enum(interval: &IntervalEnum) -> Interval {
+        match interval {
+            IntervalEnum::PerfectUnison => 0,
+            IntervalEnum::MinorSecond => 1,
+            IntervalEnum::MajorSecond => 2,
+            IntervalEnum::MinorThird => 3,
+            IntervalEnum::MajorThird => 4,
+            IntervalEnum::PerfectFourth => 5,
+            IntervalEnum::Tritone => 6,
+            IntervalEnum::PerfectFifth => 7,
+            IntervalEnum::AugmentedFifth => 8,
+            IntervalEnum::MinorSixth => 8,
+            IntervalEnum::MajorSixth => 9,
+            IntervalEnum::MinorSeventh => 10,
+            IntervalEnum::MajorSeventh => 11,
+            IntervalEnum::PerfectOctave => 12,
+            IntervalEnum::MinorNinth => 13,
+            IntervalEnum::MajorNinth => 14,
+            IntervalEnum::SharpEleven => 18,
+            IntervalEnum::MajorThirteenth => 21,
+        }
+    }    
     pub fn to_note_vec(&self) -> Vec<u8> {
         let res: Option<&u8> = (*self).midi_to_note_map.get(&(*self).root_note);
         match res {
             Some(root_midi) => {
-                let note_vec: Vec<u8> = (*self).intervals.iter().map(|&x| *root_midi + x).collect();
+                let note_vec: Vec<u8> = (*self).triad_intervals.iter().chain(&(*self).extensions).map(|&x| *root_midi + x).collect();
                 note_vec
             }
-            None => panic!("Could not find note vec")
+            None => panic!("Could not find midi map")
         }
         
     }

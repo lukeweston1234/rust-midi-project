@@ -15,6 +15,7 @@ fn run(){
             return;
         }
     };
+
     app.play_note(66, 4);
     app.play_note(68, 4);
     app.play_note(69, 4);
@@ -22,16 +23,12 @@ fn run(){
 
     let new_chord = vec![66,68,69,71];
 
-    
-
     // let test_chord: chords::Chord::major("C#");
     app.play_chord(&new_chord, 8);
 
-    let new_api_chord: chords::Chord = chords::Chord::major("A3".to_string());
+    let mut new_api_chord: chords::Chord = chords::Chord::major("A3".to_string());
 
-    for i in new_api_chord.to_note_vec().iter(){
-        println!("{}", i);
-    }
+    new_api_chord.set_extensions(&mut vec![chords::IntervalEnum::MajorSeventh]);
 
     app.play_chord(&new_api_chord.to_note_vec(), 8);
     // let test_chord:chords::Chord = chords::Chord::new();
