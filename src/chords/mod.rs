@@ -1,7 +1,7 @@
 use std::collections::HashMap;
 
 // We will use this to figure out the note
-fn initialize_midi_map() -> (HashMap<u8, Vec<String>>, HashMap<String, u8>) {
+pub fn initialize_midi_map() -> (HashMap<u8, Vec<String>>, HashMap<String, u8>) {
     let note_names_with_enharmonics = [
         vec!["A"],
         vec!["A#", "Bb"],
@@ -56,13 +56,19 @@ impl Chord {
         }
     }
     pub fn major(root_note: String) -> Chord {
-        let midi_touple: (HashMap<u8, Vec<String>>, HashMap<String, u8>) = initialize_midi_map();
-        Chord {
-            root_note: root_note,
-            intervals: vec![0, 7, 16, 19],
-            note_to_midi_map: midi_touple.0,
-            midi_to_note_map: midi_touple.1
-        }
+        return Chord::new(root_note,  vec![0, 4, 7]);
+    }
+    pub fn minor(root_note: String) -> Chord {
+        return Chord::new(root_note,  vec![0, 3, 7]);
+    }
+    pub fn diminished(root_note: String) -> Chord {
+        return Chord::new(root_note,  vec![0, 4, 6]);
+    }
+    pub fn sus(root_note: String) -> Chord {
+        return Chord::new(root_note, vec![0, 5, 7]);
+    }
+    pub fn set_extensions(&mut self, intervals: &mut Vec<Interval>){
+        (*self).intervals.append(intervals);
     }
     pub fn to_note_vec(&self) -> Vec<u8> {
         let res: Option<&u8> = (*self).midi_to_note_map.get(&(*self).root_note);

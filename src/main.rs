@@ -1,4 +1,4 @@
-use std::io::stdin;
+use std::io::{stdin, stdout};
 
 mod app;
 mod chords;
@@ -28,6 +28,10 @@ fn run(){
     app.play_chord(&new_chord, 8);
 
     let new_api_chord: chords::Chord = chords::Chord::major("A3".to_string());
+
+    for i in new_api_chord.to_note_vec().iter(){
+        println!("{}", i);
+    }
 
     app.play_chord(&new_api_chord.to_note_vec(), 8);
     // let test_chord:chords::Chord = chords::Chord::new();
