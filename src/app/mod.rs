@@ -11,6 +11,7 @@ const NOTE_OFF_MSG: u8 = 0x80;
 const VELOCITY: u8 = 0x64;
 
 pub struct App {
+    #[allow(dead_code)]
     midi_in: MidiInputConnection<()>,
     midi_out: MidiOutputConnection
 }

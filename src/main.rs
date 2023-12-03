@@ -1,7 +1,7 @@
 use std::io::stdin;
 
-
 mod app;
+mod chords;
     
 fn main() {
     run()
@@ -22,9 +22,16 @@ fn run(){
 
     let new_chord = vec![66,68,69,71];
 
+    
+
+    // let test_chord: chords::Chord::major("C#");
     app.play_chord(&new_chord, 8);
 
-    println!("Going to wait...");
+    let new_api_chord: chords::Chord = chords::Chord::major("A3".to_string());
+
+    app.play_chord(&new_api_chord.to_note_vec(), 8);
+    // let test_chord:chords::Chord = chords::Chord::new();
+
     stdin().read_line(&mut String::new()).unwrap();
 }
 
