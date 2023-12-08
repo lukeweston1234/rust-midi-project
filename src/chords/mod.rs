@@ -1,4 +1,4 @@
-use std::collections::HashMap;
+use std::{collections::HashMap};
 
 // We will use this to figure out the note
 pub fn initialize_midi_map() -> (HashMap<u8, Vec<String>>, HashMap<String, u8>) {
@@ -38,6 +38,8 @@ pub fn initialize_midi_map() -> (HashMap<u8, Vec<String>>, HashMap<String, u8>) 
 }
 
 pub type Interval = u8;
+
+#[allow(dead_code)]
 pub enum IntervalEnum {
     PerfectUnison,
     MinorSecond,
@@ -56,8 +58,22 @@ pub enum IntervalEnum {
     MinorNinth,
     MajorNinth,
     SharpEleven,
+    PerfectEleventh,
     MajorThirteenth
 } 
+
+pub struct ChordProgression {
+    pub chords: Vec<Chord>,
+    pub duration: u64
+}
+impl ChordProgression {
+    pub fn new(chords: Vec<Chord>, duration: u64) -> ChordProgression{
+        ChordProgression {
+            chords: chords,
+            duration: duration
+        }
+    }
+}
 
 pub struct Chord {
     root_note: String,
@@ -66,6 +82,7 @@ pub struct Chord {
     note_to_midi_map: HashMap<u8, Vec<String>>,
     midi_to_note_map: HashMap<String, u8>
 }
+
 impl Chord {
     pub fn new(root_note: String, intervals: Vec<Interval>) -> Chord {
         let midi_touple: (HashMap<u8, Vec<String>>, HashMap<String, u8>) = initialize_midi_map();
@@ -110,6 +127,7 @@ impl Chord {
             IntervalEnum::PerfectOctave => 12,
             IntervalEnum::MinorNinth => 13,
             IntervalEnum::MajorNinth => 14,
+            IntervalEnum::PerfectEleventh => 17,
             IntervalEnum::SharpEleven => 18,
             IntervalEnum::MajorThirteenth => 21,
         }

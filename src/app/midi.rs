@@ -7,6 +7,7 @@ pub fn build_midi_in() -> Result<MidiInputConnection<()>, Box<dyn Error>> {
     midi_in.ignore(Ignore::None);
 
     let in_ports: Vec<midir::MidiInputPort> = midi_in.ports();
+
     let in_port: &midir::MidiInputPort = &in_ports[0];
 
     let conn_in: MidiInputConnection<()> = midi_in.connect(
