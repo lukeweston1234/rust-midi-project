@@ -2,7 +2,7 @@ use std::error::Error;
 
 use midir::{MidiOutput, Ignore, MidiOutputConnection, MidiInput, MidiInputConnection};
 
-pub fn build_midi_in() -> Result<MidiInputConnection<()>, Box<dyn Error>> {
+pub fn build_midi_in(callback_fn: impl FnMut(u64, &[u8], &mut ()) + Send + 'static) -> Result<MidiInputConnection<()>, Box<dyn Error>> {
     let mut midi_in: MidiInput = MidiInput::new("midir reading input")?;
     midi_in.ignore(Ignore::None);
 
@@ -13,10 +13,7 @@ pub fn build_midi_in() -> Result<MidiInputConnection<()>, Box<dyn Error>> {
     let conn_in: MidiInputConnection<()> = midi_in.connect(
         &in_port,
         "midir-read-input",
-        move |stamp, message, _| {
-            // println!("{}: {:x?} (len = {})", stamp, message, message.len());
-            return;
-        },
+        callback_fn,
         (),
     )?;
     Ok(conn_in)

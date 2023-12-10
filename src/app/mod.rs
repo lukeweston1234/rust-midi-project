@@ -20,14 +20,18 @@ pub enum VoicingSystem {
     DropThree,
 }
 
+fn test_function(timestamp: u64, message: &[u8], options: &mut ()){
+    println!("{}:{:?}", timestamp, message)
+}
+
 pub struct App {
     #[allow(dead_code)]
     midi_in: MidiInputConnection<()>,
-    midi_out: MidiOutputConnection
+    midi_out: MidiOutputConnection,
 }
 impl App {
     pub fn new() -> Result<App, Box<dyn Error>>{
-        let midi_in: MidiInputConnection<()> = midi::build_midi_in()?;
+        let midi_in: MidiInputConnection<()> = midi::build_midi_in(test_function)?;
         let midi_out: MidiOutputConnection = midi::build_midi_out()?;
         let app: App = App {
             midi_in: midi_in,
