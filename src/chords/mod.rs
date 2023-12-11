@@ -61,16 +61,70 @@ pub enum IntervalEnum {
     PerfectEleventh,
     MajorThirteenth
 } 
+impl IntervalEnum {
+    fn value(&self) -> Interval {
+        match *self {
+            IntervalEnum::PerfectUnison => 0,
+            IntervalEnum::MinorSecond => 1,
+            IntervalEnum::MajorSecond => 2,
+            IntervalEnum::MinorThird => 3,
+            IntervalEnum::MajorThird => 4,
+            IntervalEnum::PerfectFourth => 5,
+            IntervalEnum::Tritone => 6,
+            IntervalEnum::PerfectFifth => 7,
+            IntervalEnum::AugmentedFifth => 8,
+            IntervalEnum::MinorSixth => 8,
+            IntervalEnum::MajorSixth => 9,
+            IntervalEnum::MinorSeventh => 10,
+            IntervalEnum::MajorSeventh => 11,
+            IntervalEnum::PerfectOctave => 12,
+            IntervalEnum::MinorNinth => 13,
+            IntervalEnum::MajorNinth => 14,
+            IntervalEnum::PerfectEleventh => 17,
+            IntervalEnum::SharpEleven => 18,
+            IntervalEnum::MajorThirteenth => 21,
+        }
+    }    
+}
+
+
+pub enum NoteEnum {
+    WholeNote,
+    HalfNote,
+    QuarterNote,
+    EigthNote,
+    SixteenthNote,
+} 
+impl NoteEnum {
+    pub fn value(&self) -> f32 {
+        match *self {
+            Self::WholeNote => 1.0,
+            Self::HalfNote => 0.5,
+            Self::QuarterNote => 0.25,
+            Self::EigthNote => 0.125,
+            Self::SixteenthNote => 0.0625
+        }
+    }
+}
+
+pub struct Scene {
+    pub progression: Vec<ChordProgression>,
+}
+impl Scene {
+    pub fn new(chord_progressions: Vec<ChordProgression>) -> Scene{
+        Scene {
+            progression: chord_progressions,
+        }
+    }
+}
 
 pub struct ChordProgression {
     pub chords: Vec<Chord>,
-    pub duration: u64
 }
 impl ChordProgression {
     pub fn new(chords: Vec<Chord>, duration: u64) -> ChordProgression{
         ChordProgression {
             chords: chords,
-            duration: duration
         }
     }
 }
@@ -107,31 +161,8 @@ impl Chord {
         return Chord::new(root_note, vec![0, 5, 7]);
     }
     pub fn set_extensions(&mut self, intervals: &mut Vec<IntervalEnum>){
-        (*self).extensions = intervals.iter().map(|i| { Chord::get_interval_from_enum(i)}).collect();
+        (*self).extensions = intervals.iter().map(|i| { (*i).value() }).collect();
     }
-    fn get_interval_from_enum(interval: &IntervalEnum) -> Interval {
-        match interval {
-            IntervalEnum::PerfectUnison => 0,
-            IntervalEnum::MinorSecond => 1,
-            IntervalEnum::MajorSecond => 2,
-            IntervalEnum::MinorThird => 3,
-            IntervalEnum::MajorThird => 4,
-            IntervalEnum::PerfectFourth => 5,
-            IntervalEnum::Tritone => 6,
-            IntervalEnum::PerfectFifth => 7,
-            IntervalEnum::AugmentedFifth => 8,
-            IntervalEnum::MinorSixth => 8,
-            IntervalEnum::MajorSixth => 9,
-            IntervalEnum::MinorSeventh => 10,
-            IntervalEnum::MajorSeventh => 11,
-            IntervalEnum::PerfectOctave => 12,
-            IntervalEnum::MinorNinth => 13,
-            IntervalEnum::MajorNinth => 14,
-            IntervalEnum::PerfectEleventh => 17,
-            IntervalEnum::SharpEleven => 18,
-            IntervalEnum::MajorThirteenth => 21,
-        }
-    }    
     pub fn to_note_vec(&self) -> Vec<u8> {
         let res: Option<&u8> = (*self).midi_to_note_map.get(&(*self).root_note);
         match res {

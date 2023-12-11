@@ -30,12 +30,10 @@ fn run(){
     let mut chord_four:chords::Chord = chords::Chord::minor("E3".to_string());
     chord_four.set_extensions(&mut vec![chords::IntervalEnum::MinorSeventh, chords::IntervalEnum::PerfectEleventh]);
 
-    let chord_progressions: Vec<chords::Chord> = vec![chord_one, chord_two, chord_three, chord_four];
+    let chord_vec_one: Vec<chords::Chord> = vec![chord_one, chord_two, chord_three, chord_four];
 
-    let mut test_chords: chords::ChordProgression = chords::ChordProgression::new(chord_progressions, 32);
+    let test_chords: chords::ChordProgression = chords::ChordProgression::new(chord_vec_one, 32);
 
-    while true {
-        app.play_progression(&mut test_chords, app::VoicingSystem::DropTwo);
-    }
+    app.play_scene(chords::Scene::new(vec![test_chords]), chords::NoteEnum::WholeNote, &app::VoicingSystem::DropTwo);
 
 }
